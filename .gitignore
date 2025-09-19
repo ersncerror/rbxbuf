@@ -1,0 +1,10 @@
+# Project place file
+/rbxbuf.rbxlx
+
+# Roblox Studio lock files
+/*.rbxlx.lock
+/*.rbxl.lock
+
+# Theses might be use on future
+/assets
+/.vscode
