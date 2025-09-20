@@ -26,7 +26,7 @@ return {
 	["Int8"] = {
 		write = function(c: Cursor, value: number)
 			buffer.writei8(c.Buffer, c.Offset, value)
-			c.Offset += 2
+			c.Offset += 1
 		end,
 		read = function(c: Cursor, offset: number)
 			return buffer.readi8(c.Buffer, offset)
