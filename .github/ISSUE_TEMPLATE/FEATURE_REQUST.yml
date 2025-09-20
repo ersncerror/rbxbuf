@@ -1,8 +1,8 @@
 # THIS IS GENERATE BY AI, JUST FOR TEST
 
 name: 💡 Feature Request
-description: Suggest an idea
-title: "[Feat]: "
+description: Suggests a idea of feature or anything else!
+title: "Issue Title here"
 labels: ["enhancement"]
 body:
   - type: textarea
