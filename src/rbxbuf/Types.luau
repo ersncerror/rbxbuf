@@ -14,7 +14,7 @@ export type DataType = {
 }
 
 return {
-	["U8"] = {
+	["UInt8"] = {
 		write = function(c: Cursor, value: number)
 			buffer.writeu8(c.Buffer, c.Offset, value)
 			c.Offset += 1
@@ -23,7 +23,7 @@ return {
 			return buffer.readu8(c.Buffer, offset)
 		end,
 	},
-	["I8"] = {
+	["Int8"] = {
 		write = function(c: Cursor, value: number)
 			buffer.writei8(c.Buffer, c.Offset, value)
 			c.Offset += 2
@@ -32,7 +32,7 @@ return {
 			return buffer.readi8(c.Buffer, offset)
 		end,
 	},
-	["U16"] = {
+	["UInt16"] = {
 		write = function(c: Cursor, value: number)
 			buffer.writeu16(c.Buffer, c.Offset, value)
 			c.Offset += 2
@@ -41,7 +41,7 @@ return {
 			return buffer.readu16(c.Buffer, offset)
 		end,
 	},
-	["I16"] = {
+	["Int16"] = {
 		write = function(c: Cursor, value: number)
 			buffer.writei16(c.Buffer, c.Offset, value)
 			c.Offset += 2
@@ -50,7 +50,7 @@ return {
 			return buffer.readi16(c.Buffer, offset)
 		end,
 	},
-	["U32"] = {
+	["UInt32"] = {
 		write = function(c: Cursor, value: number)
 			buffer.writeu32(c.Buffer, c.Offset, value)
 			c.Offset += 4
@@ -59,7 +59,7 @@ return {
 			return buffer.readu32(c.Buffer, offset)
 		end,
 	},
-	["I32"] = {
+	["Int32"] = {
 		write = function(c: Cursor, value: number)
 			buffer.writei32(c.Buffer, c.Offset, value)
 			c.Offset += 4
@@ -68,7 +68,7 @@ return {
 			return buffer.readi32(c.Buffer, offset)
 		end,
 	},
-	["F32"] = {
+	["Float32"] = {
 		write = function(c: Cursor, value: number)
 			buffer.writef32(c.Buffer, c.Offset, value)
 			c.Offset += 4
@@ -77,7 +77,7 @@ return {
 			return buffer.readf32(c.Buffer, offset)
 		end,
 	},
-	["F64"] = {
+	["Float64"] = {
 		write = function(c: Cursor, value: number)
 			buffer.writef64(c.Buffer, c.Offset, value)
 			c.Offset += 8
@@ -106,6 +106,32 @@ return {
 		read = function(c: Cursor, offset: number)
 			local value = buffer.readu8(c.Buffer, offset)
 			return if value == 1 then true else false
+		end,
+	},
+	["Color3"] = {
+		write = function(c: Cursor, value: Color3)
+			local R = math.floor(value.R * 255)
+			local G = math.floor(value.G * 255)
+			local B = math.floor(value.B * 255)
+
+			buffer.writeu8(c.Buffer, c.Offset, R)
+			buffer.writeu8(c.Buffer, c.Offset + 1, G)
+			buffer.writeu8(c.Buffer, c.Offset + 2, B)
+
+			print("Write RGB:", R, G, B)
+			c.Offset += 3
+		end,
+
+		read = function(c: Cursor, offset: number)
+			local R
+			local G
+			local B
+
+			R = buffer.readu8(c.Buffer, offset)
+			G = buffer.readu8(c.Buffer, offset + 1)
+			B = buffer.readu8(c.Buffer, offset + 2)
+
+			return Color3.fromRGB(R / 255, G / 255, B / 255)
 		end,
 	},
 }
