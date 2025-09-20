@@ -1,10 +1,10 @@
-## rbxbuf 
+# rbxbuf 
 ![Github Releases](https://img.shields.io/github/v/release/ersncerror/rbxbuf
 )
 
 A roblox [buffer](https://luau.org/library#buffer-library) library for personal practice.
 
-### :information_source: Introduction
+## :information_source: Introduction
 
 A buffer library with a built-in cursor for easily reading, writing, clearing and tracking buffers; using its methods, you can work with multiple data types that is supported, and read from or write to the buffer.
 
