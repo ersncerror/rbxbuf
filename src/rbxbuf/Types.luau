@@ -13,6 +13,16 @@ export type DataType = {
 	write: TypeFunc,
 }
 
+local Enums = require(script.Parent.Enums)
+
+local function findEnum(Enum: Enum): number?
+	for i, v in Enums do
+		if v == Enum then
+			return i
+		end
+	end
+end
+
 return {
 	["UInt8"] = {
 		write = function(c: Cursor, value: number)
@@ -132,6 +142,36 @@ return {
 			B = buffer.readu8(c.Buffer, offset + 2)
 
 			return Color3.fromRGB(R / 255, G / 255, B / 255)
+		end,
+	},
+	["EnumItem"] = {
+		write = function(c: Cursor, value: EnumItem)
+			local enumIndex = findEnum(value.EnumType)
+
+			if not enumIndex then
+				warn(
+					`{value.EnumType} is not found. If you want write this enum to buffer, please add a enum to the "Enums" module.`
+				)
+				return
+			end
+
+			-- Write Name
+			local bytes = #value.Name
+
+			buffer.writef32(c.Buffer, c.Offset, bytes)
+			buffer.writestring(c.Buffer, c.Offset + 4, value.Name, bytes)
+
+			-- Write Enum Parent
+			buffer.writeu8(c.Buffer, c.Offset + 4 + bytes, enumIndex)
+			c.Offset += 4 + bytes + 1
+		end,
+		read = function(c: Cursor, offset: number)
+			local nameLength = buffer.readf32(c.Buffer, offset)
+
+			local itemName = buffer.readstring(c.Buffer, offset + 4, nameLength)
+			local enumIndex = buffer.readu8(c.Buffer, offset + 4 + nameLength)
+
+			return Enums[enumIndex]:FromName(itemName)
 		end,
 	},
 }

@@ -12,6 +12,7 @@ local rbxbuf = {
 	["String"] = Types.String,
 	["Boolean"] = Types.Boolean,
 	["Color3"] = Types.Color3,
+	["EnumItem"] = Types.EnumItem,
 } :: Cursor
 rbxbuf.__index = rbxbuf
 
@@ -34,17 +35,24 @@ function rbxbuf:clear(): ()
 	self.Offset = 0
 end
 
-function rbxbuf:write(type: Types.DataType, value: any)
+function rbxbuf:write(type: DataType, value: any)
 	type.write(self, value)
 end
 
-function rbxbuf:read(type: Types.DataType, offset: number)
+function rbxbuf:read(type: DataType, offset: number)
 	return type.read(self, offset)
 end
 
 function rbxbuf:len(): number
 	return buffer.len(self.Buffer)
 end
+
+type TypeFunc<T> = (c: Cursor, value: T) -> any
+
+type DataType = {
+	read: TypeFunc,
+	write: TypeFunc,
+}
 
 export type Cursor = {
 	__index: Cursor,
@@ -54,25 +62,26 @@ export type Cursor = {
 	Length: number,
 
 	clear: (Cursor) -> (),
-	write: <T>(c: Cursor, t: Types.DataType, v: T) -> (),
-	read: (c: Cursor, t: Types.DataType, v: T) -> any,
+	write: <T>(c: Cursor, t: DataType, v: T) -> (),
+	read: (c: Cursor, t: DataType, v: T) -> any,
 	len: (c: Cursor) -> number,
 }
 
 export type CursorMeta = {
 	__index: Cursor,
 
-	UInt8: Types.DataType,
-	Int8: Types.DataType,
-	UInt16: Types.DataType,
-	Int16: Types.DataType,
-	UInt32: Types.DataType,
-	Int32: Types.DataType,
-	Float32: Types.DataType,
-	Float64: Types.DataType,
-	String: Types.DataType,
-	Boolean: Types.DataType,
-	Color3: Types.DataType,
+	UInt8: DataType,
+	Int8: DataType,
+	UInt16: DataType,
+	Int16: DataType,
+	UInt32: DataType,
+	Int32: DataType,
+	Float32: DataType,
+	Float64: DataType,
+	String: DataType,
+	Boolean: DataType,
+	Color3: DataType,
+	EnumItem: DataType,
 
 	new: (Size: number) -> Cursor,
 }
