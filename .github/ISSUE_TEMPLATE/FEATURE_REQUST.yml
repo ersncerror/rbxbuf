@@ -1,14 +1,19 @@
-# THIS IS GENERATE BY AI, JUST FOR TEST
-
-name: 💡 Feature Request
-description: Suggests a idea of feature or anything else!
-title: "Issue Title here"
+name: Feature Request
+description: Suggest a idea.
+title: "[Feature Request]: "
 labels: ["enhancement"]
 body:
-  - type: markdown
-    id: description
+  - type: input
+    id: input_feature
     attributes:
-      label: Description
-      placeholder: A clear and concise description of what you want to happen.
+      label: Suggest your Feature at here
+      placeholder: any...
     validations:
-      required: true
+      required: false
+  - type: input
+    id: related
+    attributes:
+      label: Related Links
+      placeholder: You can set any related links at here.
+    validations:
+      required: false
