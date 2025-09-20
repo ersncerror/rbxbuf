@@ -3,14 +3,14 @@ description: Suggest a idea.
 title: "[Feature Request]: "
 labels: ["enhancement"]
 body:
-  - type: input
+  - type: textarea
     id: input_feature
     attributes:
       label: Suggest your Feature at here
       placeholder: any...
     validations:
       required: false
-  - type: input
+  - type: textarea
     id: related
     attributes:
       label: Related Links
