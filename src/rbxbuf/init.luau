@@ -1,7 +1,7 @@
---!strict
+local Types = require(script.Types)
 
 local rbxbuf = {
-	Types = require(script.Types),
+	Types = Types,
 } :: Cursor
 rbxbuf.__index = rbxbuf
 
@@ -24,27 +24,30 @@ function rbxbuf:clear(): ()
 	self.Offset = 0
 end
 
-function rbxbuf:write(type: (Cursor, number | string | boolean) -> (), value: any)
-	type(self, value)
+function rbxbuf:write(type: Types.DataType, value: any)
+	type.write(self, value)
 end
 
-function rbxbuf:read() end
+function rbxbuf:read(type: Types.DataType, offset: number)
+	return type.read(self, offset)
+end
 
 export type Cursor = {
 	__index: Cursor,
-	Buffer: buffer | nil,
+
+	Buffer: buffer,
 	Offset: number,
 	Max: number,
 
-	new: (Size: number) -> Cursor,
 	clear: (Cursor) -> (),
-	write: (Cursor) -> (),
-	read: (Cursor) -> (),
+	write: <T>(c: Cursor, t: Types.DataType, v: T) -> (),
+	read: (c: Cursor, t: Types.DataType, v: T) -> number | string | boolean,
 }
 
 export type CursorMeta = {
 	__index: Cursor,
 
+	Types: typeof(Types),
 	new: (Size: number) -> Cursor,
 }
 
