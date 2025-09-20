@@ -8,12 +8,14 @@ body:
     attributes:
       label: Suggest your Feature at here
       placeholder: any...
+      value: "I have a very cool idea to suggest!"
     validations:
       required: false
   - type: textarea
     id: related
     attributes:
-      label: Related Links
-      placeholder: You can set any related links at here.
+      label: Related Contents
+      placeholder: You can set any related contents at here.
+      value: "Related Content"
     validations:
       required: false
