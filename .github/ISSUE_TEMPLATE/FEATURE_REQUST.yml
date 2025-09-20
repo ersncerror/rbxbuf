@@ -5,7 +5,7 @@ description: Suggests a idea of feature or anything else!
 title: "Issue Title here"
 labels: ["enhancement"]
 body:
-  - type: textarea
+  - type: markdown
     id: description
     attributes:
       label: Description
