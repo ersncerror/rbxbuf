@@ -6,7 +6,7 @@ type Cursor = {
 	Max: number,
 }
 
-export type TypeFunc<T> = (c: Cursor, value: T) -> ()
+export type TypeFunc<T> = (c: Cursor, value: T) -> any
 
 export type DataType = {
 	read: TypeFunc,

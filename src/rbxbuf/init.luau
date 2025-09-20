@@ -20,7 +20,7 @@ function rbxbuf.new(Size: number?)
 
 	local self = {
 		Buffer = buffer.create(Size),
-		Max = Size,
+		Length = Size,
 		Offset = 0,
 	}
 
@@ -30,7 +30,7 @@ end
 -- Actually this creates a new buffer
 function rbxbuf:clear(): ()
 	self.Buffer = nil -- the old one should be garbage collect
-	self.Buffer = buffer.create(self.Max)
+	self.Buffer = buffer.create(self.Length)
 	self.Offset = 0
 end
 
@@ -51,7 +51,7 @@ export type Cursor = {
 
 	Buffer: buffer,
 	Offset: number,
-	Max: number,
+	Length: number,
 
 	clear: (Cursor) -> (),
 	write: <T>(c: Cursor, t: Types.DataType, v: T) -> (),
