@@ -7,7 +7,7 @@ The library did a simple work that allows you did basic works of buffer. Library
 
 <summary> List of supported data types </summary>
 
-More data types maybe will be add in future.
+More data types may be added in the future.
 
 - Int8
 - UInt8
