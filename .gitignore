@@ -5,6 +5,8 @@
 /*.rbxl.lock
 /*.rbxl.lock
 
-# Theses might be use on future
-/assets
+# Debug use
+/*src/Server
+
+# Ignore stuff
 /.vscode
