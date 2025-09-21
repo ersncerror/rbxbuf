@@ -1,19 +1,6 @@
 local Types = require(script.Types)
 
-local rbxbuf = {
-	["UInt8"] = Types.UInt8,
-	["Int8"] = Types.Int8,
-	["UInt16"] = Types.UInt16,
-	["Int16"] = Types.Int16,
-	["UInt32"] = Types.UInt32,
-	["Int32"] = Types.Int32,
-	["Float32"] = Types.Float32,
-	["Float64"] = Types.Float64,
-	["String"] = Types.String,
-	["Boolean"] = Types.Boolean,
-	["Color3"] = Types.Color3,
-	["EnumItem"] = Types.EnumItem,
-} :: Cursor
+local rbxbuf = {} :: Cursor
 rbxbuf.__index = rbxbuf
 
 function rbxbuf.new(Size: number?)
@@ -47,6 +34,10 @@ function rbxbuf:len(): number
 	return buffer.len(self.Buffer)
 end
 
+for i, v in Types do
+	rbxbuf[i] = v
+end
+
 type TypeFunc<T> = (c: Cursor, value: T) -> any
 
 type DataType = {
@@ -70,6 +61,7 @@ export type Cursor = {
 export type CursorMeta = {
 	__index: Cursor,
 
+	-- [ Numbers ] --
 	UInt8: DataType,
 	Int8: DataType,
 	UInt16: DataType,
@@ -78,10 +70,26 @@ export type CursorMeta = {
 	Int32: DataType,
 	Float32: DataType,
 	Float64: DataType,
+
+	-- [ Lua Data types ] --
 	String: DataType,
 	Boolean: DataType,
+
+	-- [ RBX Data Types ] --
 	Color3: DataType,
 	EnumItem: DataType,
+
+	-- [ Vectors ] --
+	Vector3: DataType,
+	Vector3Int16: DataType,
+	Vector2: DataType,
+	Vector2Int16: DataType,
+
+	-- [ CFrames ] --
+	CFrameI16I8: DataType, --> 9 bytes
+	CFrameI16I16: DataType, --> 12 bytes
+	CFrameF32I8: DataType, --> 15 bytes
+	CFrameF32I16: DataType, --> 18 bytes
 
 	new: (Size: number) -> Cursor,
 }

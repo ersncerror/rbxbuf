@@ -28,7 +28,11 @@ A buffer library with a built-in cursor for easily reading, writing, clearing an
 - String
 - Boolean
 - Color3
+- EnumItem
+- Vector3
+- Vector2
+- CFrame
 </details>
 
 ## :book: Documentation
-Documentation is not exists yet, but I probably will make one on future! So you can understand my terrible codes.
+Documentation may be make in the future! So you can understand my terrible codes!
