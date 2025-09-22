@@ -23,7 +23,11 @@ function rbxbuf:clear(): ()
 end
 
 function rbxbuf:write(type: DataType, value: any)
+	local valuePos = self.Offset
+
 	type.write(self, value)
+
+	return valuePos
 end
 
 function rbxbuf:read(type: DataType, offset: number)
@@ -53,7 +57,7 @@ export type Cursor = {
 	Length: number,
 
 	clear: (Cursor) -> (),
-	write: <T>(c: Cursor, t: DataType, v: T) -> (),
+	write: <T>(c: Cursor, t: DataType, v: T) -> number,
 	read: (c: Cursor, t: DataType, v: T) -> any,
 	len: (c: Cursor) -> number,
 }
