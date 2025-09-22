@@ -94,6 +94,16 @@ function rbxbuf:read(type: DataType, offset: number)
 	return type.read(self, offset)
 end
 
+-- copys specified values into the another cursor.
+function rbxbuf:copy(target: Cursor, targetOffset: number, sourceOffset: number, count: number)
+	buffer.copy(self.Buffer, sourceOffset, target.Buffer, targetOffset, count)
+	-- buffer.copy(c, 0, b, 0, 1)
+end
+
+function rbxbuf:fill(offset: number, value: number, count: number)
+	buffer.fill(self.Buffer, offset, value, count)
+end
+
 function rbxbuf:len(): number
 	return buffer.len(self.Buffer)
 end
@@ -125,6 +135,8 @@ export type Cursor = {
 	write: <T>(c: Cursor, t: DataType, v: T) -> number,
 	overwrite: <T>(c: Cursor, t: DataType, offset: number, v: T) -> (),
 	read: (c: Cursor, t: DataType, v: T) -> any,
+	copy: (c: Cursor, target: Cursor, targetOffset: number, sourceOffset: number, count: number) -> (),
+	fill: (c: Cursor, offset: number, value: number, count: number) -> (),
 	len: (c: Cursor) -> number,
 	tostring: (c: Cursor) -> string,
 }
