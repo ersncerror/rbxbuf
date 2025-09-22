@@ -160,7 +160,7 @@ end
 
 -- [ EnumItem ] --
 types.EnumItem = {}
-types.EnumItem.bytes = 5
+types.EnumItem.bytes = 2
 types.EnumItem.write = function(c: Cursor, offset: number, value: number)
 	local enumIndex = findEnum(value.EnumType)
 
@@ -174,17 +174,17 @@ types.EnumItem.write = function(c: Cursor, offset: number, value: number)
 	-- Write Name
 	local bytes = #value.Name
 
-	buffer.writef32(c.Buffer, offset, bytes)
+	buffer.writeu8(c.Buffer, offset, bytes) --> 1
 	buffer.writestring(c.Buffer, offset + 4, value.Name, bytes)
 
 	-- Write Enum Parent
-	buffer.writeu8(c.Buffer, offset + 4 + bytes, enumIndex)
+	buffer.writeu8(c.Buffer, offset + 1 + bytes, enumIndex) --> 1
 end
 types.EnumItem.read = function(c: Cursor, offset: number)
-	local nameLength = buffer.readf32(c.Buffer, offset)
+	local nameLength = buffer.readu8(c.Buffer, offset)
 
-	local itemName = buffer.readstring(c.Buffer, offset + 4, nameLength)
-	local enumIndex = buffer.readu8(c.Buffer, offset + 4 + nameLength)
+	local itemName = buffer.readstring(c.Buffer, offset + 1, nameLength)
+	local enumIndex = buffer.readu8(c.Buffer, offset + 1 + nameLength)
 
 	return Enums[enumIndex]:FromName(itemName)
 end
