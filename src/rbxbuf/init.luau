@@ -25,9 +25,25 @@ end
 function rbxbuf:write(type: DataType, value: any)
 	local valuePos = self.Offset
 
-	type.write(self, value)
+	type.write(self, self.Offset, value)
+
+	if type == Types.String then
+		local String = value :: string
+
+		self.Offset += #String
+	elseif type == Types.EnumItem then
+		local enumItem = value :: EnumItem
+
+		self.Offset += #enumItem.Name
+	end
+
+	self.Offset += type.bytes
 
 	return valuePos
+end
+
+function rbxbuf:overwrite(type: DataType, offset: number, value: any)
+	type.write(self, offset, value)
 end
 
 function rbxbuf:read(type: DataType, offset: number)
@@ -47,6 +63,7 @@ type TypeFunc<T> = (c: Cursor, value: T) -> any
 type DataType = {
 	read: TypeFunc,
 	write: TypeFunc,
+	bytes: number,
 }
 
 export type Cursor = {
@@ -58,6 +75,7 @@ export type Cursor = {
 
 	clear: (Cursor) -> (),
 	write: <T>(c: Cursor, t: DataType, v: T) -> number,
+	overwrite: <T>(c: Cursor, t: DataType, offset: number, v: T) -> (),
 	read: (c: Cursor, t: DataType, v: T) -> any,
 	len: (c: Cursor) -> number,
 }
