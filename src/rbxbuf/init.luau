@@ -3,6 +3,18 @@ local Types = require(script.Types)
 local rbxbuf = {} :: Cursor
 rbxbuf.__index = rbxbuf
 
+local function calculateBytes(type: DataType, value: any): number
+	local bytes = 0
+
+	if type == Types.String then
+		bytes = #value
+	elseif type == Types.EnumItem then
+		bytes = #value.Name
+	end
+
+	return type.bytes + bytes
+end
+
 function rbxbuf.new(Size: number?)
 	Size = Size or 128
 
@@ -23,19 +35,11 @@ function rbxbuf:clear(): ()
 end
 
 function rbxbuf:write(type: DataType, value: any)
-	local extraBytes = 0
+	local bytes = calculateBytes(type, value)
 
-	if type == Types.String then
-		extraBytes = #value
-	elseif type == Types.EnumItem then
-		extraBytes = #value.Name
-	end
-
-	local finalBytes = self.Offset + type.bytes + extraBytes
-
-	if finalBytes > self.Length then
+	if self.Offset + bytes > self.Length then
 		warn(
-			`There's not enough spaces to write! (spaces need: {finalBytes} bytes, spaces left: {self.Length - self.Offset} bytes)`,
+			`There's not enough spaces to write! (spaces need: {bytes} bytes, spaces left: {self.Length - self.Offset} bytes)`,
 			debug.traceback()
 		)
 		return
@@ -61,6 +65,16 @@ function rbxbuf:write(type: DataType, value: any)
 end
 
 function rbxbuf:overwrite(type: DataType, offset: number, value: any)
+	local bytes = calculateBytes(type, value)
+
+	if offset + bytes > self.Offset then
+		warn(
+			`There's not enough spaces to overwrite! (spaces need: {bytes} bytes, spaces left: {self.Length - self.Offset} bytes)`,
+			debug.traceback()
+		)
+		return
+	end
+
 	type.write(self, offset, value)
 end
 
