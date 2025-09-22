@@ -4,7 +4,7 @@
 
 ## :information_source: Introduction
 
-A buffer library with a built-in cursor for easily reading, writing, clearing and tracking buffers; using its methods, you can work with multiple data types that is supported, and read from or write to the buffer.
+A buffer library with a built-in cursor for easily work with buffer opreations; you can also work with multiple data types that is supported.
 
 ## :book: Documentation
 Documentation may be make in the future! So you can understand my terrible codes!
