@@ -3,6 +3,18 @@ local Types = require(script.Types)
 local rbxbuf = {} :: Cursor
 rbxbuf.__index = rbxbuf
 
+local function calculateBytes(type: DataType, value: any): number
+	local bytes = 0
+
+	if type == Types.String then
+		bytes = #value
+	elseif type == Types.EnumItem then
+		bytes = #value.Name
+	end
+
+	return type.bytes + bytes
+end
+
 function rbxbuf.new(Size: number?)
 	Size = Size or 128
 
@@ -23,7 +35,47 @@ function rbxbuf:clear(): ()
 end
 
 function rbxbuf:write(type: DataType, value: any)
-	type.write(self, value)
+	local bytes = calculateBytes(type, value)
+
+	if self.Offset + bytes > self.Length then
+		warn(
+			`There's not enough spaces to write! (spaces need: {bytes} bytes, spaces left: {self.Length - self.Offset} bytes)`,
+			debug.traceback()
+		)
+		return
+	end
+
+	local valuePos = self.Offset
+
+	if type == Types.String then
+		local String = value :: string
+
+		self.Offset += #String
+	elseif type == Types.EnumItem then
+		local enumItem = value :: EnumItem
+
+		self.Offset += #enumItem.Name
+	end
+
+	type.write(self, self.Offset, value)
+
+	self.Offset += type.bytes
+
+	return valuePos
+end
+
+function rbxbuf:overwrite(type: DataType, offset: number, value: any)
+	local bytes = calculateBytes(type, value)
+
+	if offset + bytes > self.Offset then
+		warn(
+			`There's not enough spaces to overwrite! (spaces need: {bytes} bytes, spaces left: {self.Length - self.Offset} bytes)`,
+			debug.traceback()
+		)
+		return
+	end
+
+	type.write(self, offset, value)
 end
 
 function rbxbuf:read(type: DataType, offset: number)
@@ -43,6 +95,7 @@ type TypeFunc<T> = (c: Cursor, value: T) -> any
 type DataType = {
 	read: TypeFunc,
 	write: TypeFunc,
+	bytes: number,
 }
 
 export type Cursor = {
@@ -53,7 +106,8 @@ export type Cursor = {
 	Length: number,
 
 	clear: (Cursor) -> (),
-	write: <T>(c: Cursor, t: DataType, v: T) -> (),
+	write: <T>(c: Cursor, t: DataType, v: T) -> number,
+	overwrite: <T>(c: Cursor, t: DataType, offset: number, v: T) -> (),
 	read: (c: Cursor, t: DataType, v: T) -> any,
 	len: (c: Cursor) -> number,
 }
