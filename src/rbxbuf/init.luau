@@ -23,9 +23,25 @@ function rbxbuf:clear(): ()
 end
 
 function rbxbuf:write(type: DataType, value: any)
-	local valuePos = self.Offset
+	local extraBytes = 0
 
-	type.write(self, self.Offset, value)
+	if type == Types.String then
+		extraBytes = #value
+	elseif type == Types.EnumItem then
+		extraBytes = #value.Name
+	end
+
+	local finalBytes = self.Offset + type.bytes + extraBytes
+
+	if finalBytes > self.Length then
+		warn(
+			`There's not enough spaces to write! (spaces need: {finalBytes} bytes, spaces left: {self.Length - self.Offset} bytes)`,
+			debug.traceback()
+		)
+		return
+	end
+
+	local valuePos = self.Offset
 
 	if type == Types.String then
 		local String = value :: string
@@ -36,6 +52,8 @@ function rbxbuf:write(type: DataType, value: any)
 
 		self.Offset += #enumItem.Name
 	end
+
+	type.write(self, self.Offset, value)
 
 	self.Offset += type.bytes
 
