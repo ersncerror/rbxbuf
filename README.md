@@ -10,9 +10,9 @@ A buffer library with a built-in cursor for easily reading, writing, clearing an
 Documentation may be make in the future! So you can understand my terrible codes!
 
 ## ✅ List of supported data types
-### Updated to Version 1.1.0
+Updated to Version 1.1.0\
 More data types may be added in the future.
-writebits or readbits will probably not be added, see [Issue #2](https://github.com/ersncerror/rbxbuf/issues/2)
+> writebits or readbits will probably not be add, see [Issue #2](https://github.com/ersncerror/rbxbuf/issues/2)
 
 <details> 
 
