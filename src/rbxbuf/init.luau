@@ -15,12 +15,24 @@ local function calculateBytes(type: DataType, value: any): number
 	return type.bytes + bytes
 end
 
-function rbxbuf.new(Size: number?)
-	Size = Size or 128
+function rbxbuf.new(size: number?)
+	size = size or 128
 
 	local self = {
-		Buffer = buffer.create(Size),
-		Length = Size,
+		Buffer = buffer.create(size),
+		Length = size,
+		Offset = 0,
+	}
+
+	return setmetatable(self, rbxbuf) :: Cursor
+end
+
+function rbxbuf.fromstring(value: string)
+	local size = #value
+
+	local self = {
+		Buffer = buffer.fromstring(value),
+		Length = size,
 		Offset = 0,
 	}
 
@@ -82,8 +94,22 @@ function rbxbuf:read(type: DataType, offset: number)
 	return type.read(self, offset)
 end
 
+-- copys specified values into the another cursor.
+function rbxbuf:copy(target: Cursor, targetOffset: number, sourceOffset: number, count: number)
+	buffer.copy(self.Buffer, sourceOffset, target.Buffer, targetOffset, count)
+	-- buffer.copy(c, 0, b, 0, 1)
+end
+
+function rbxbuf:fill(offset: number, value: number, count: number)
+	buffer.fill(self.Buffer, offset, value, count)
+end
+
 function rbxbuf:len(): number
 	return buffer.len(self.Buffer)
+end
+
+function rbxbuf:tostring(): string
+	return buffer.tostring(self.Buffer)
 end
 
 for i, v in Types do
@@ -109,7 +135,10 @@ export type Cursor = {
 	write: <T>(c: Cursor, t: DataType, v: T) -> number,
 	overwrite: <T>(c: Cursor, t: DataType, offset: number, v: T) -> (),
 	read: (c: Cursor, t: DataType, v: T) -> any,
+	copy: (c: Cursor, target: Cursor, targetOffset: number, sourceOffset: number, count: number) -> (),
+	fill: (c: Cursor, offset: number, value: number, count: number) -> (),
 	len: (c: Cursor) -> number,
+	tostring: (c: Cursor) -> string,
 }
 
 export type CursorMeta = {
@@ -145,7 +174,8 @@ export type CursorMeta = {
 	CFrameF32I8: DataType, --> 15 bytes
 	CFrameF32I16: DataType, --> 18 bytes
 
-	new: (Size: number) -> Cursor,
+	new: (size: number) -> Cursor,
+	fromstring: (value: string) -> Cursor,
 }
 
 return rbxbuf :: CursorMeta
