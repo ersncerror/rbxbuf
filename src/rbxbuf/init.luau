@@ -3,6 +3,8 @@ local Types = require(script.Types)
 local rbxbuf = {} :: Cursor
 rbxbuf.__index = rbxbuf
 
+-- [ Private Functions ] --
+
 local function calculateBytes(type: DataType, value: any): number
 	local bytes = 0
 
@@ -14,6 +16,8 @@ local function calculateBytes(type: DataType, value: any): number
 
 	return type.bytes + bytes
 end
+
+-- [ Constructors ] --
 
 function rbxbuf.new(size: number?)
 	size = size or 128
@@ -28,6 +32,9 @@ function rbxbuf.new(size: number?)
 end
 
 function rbxbuf.fromstring(value: string)
+	assert(value, "Cursor import failed, no arugment #1 given.")
+	assert(typeof(value) == "string", "Cursor import failed, the given arugment #1 is not a string.")
+
 	local size = #value
 
 	local self = {
@@ -38,6 +45,24 @@ function rbxbuf.fromstring(value: string)
 
 	return setmetatable(self, rbxbuf) :: Cursor
 end
+
+function rbxbuf.import(Buffer: buffer, offset: number)
+	assert(Buffer, "Cursor import failed, no buffer given.")
+	assert(typeof(Buffer) == "buffer", "Cursor import failed, the given arugment #1 is not a buffer.")
+
+	assert(offset, "Cursor import failed, no offset given.")
+	assert(typeof(offset) == "number", "Cursor import failed, the given arugment #2 is not a number.")
+
+	local self = {
+		Buffer = Buffer,
+		Length = buffer.len(Buffer),
+		Offset = offset,
+	}
+
+	return setmetatable(self, rbxbuf) :: Cursor
+end
+
+-- [ Methods ] --
 
 -- Actually this creates a new buffer
 function rbxbuf:clear(): ()
@@ -127,10 +152,12 @@ type DataType = {
 export type Cursor = {
 	__index: Cursor,
 
+	-- [ Properties ] --
 	Buffer: buffer,
 	Offset: number,
 	Length: number,
 
+	-- [ Methods ] --
 	clear: (Cursor) -> (),
 	write: <T>(c: Cursor, t: DataType, v: T) -> number,
 	overwrite: <T>(c: Cursor, t: DataType, offset: number, v: T) -> (),
@@ -174,8 +201,10 @@ export type CursorMeta = {
 	CFrameF32I8: DataType, --> 15 bytes
 	CFrameF32I16: DataType, --> 18 bytes
 
+	-- [ Constructors ] --
 	new: (size: number) -> Cursor,
 	fromstring: (value: string) -> Cursor,
+	import: (b: buffer, offset: number) -> Cursor,
 }
 
 return rbxbuf :: CursorMeta
