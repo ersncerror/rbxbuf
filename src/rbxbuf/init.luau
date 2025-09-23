@@ -137,6 +137,25 @@ function rbxbuf:tostring(): string
 	return buffer.tostring(self.Buffer)
 end
 
+function rbxbuf:export(destroyCursor: boolean)
+	local toExport = self.Buffer
+
+	if destroyCursor then
+		self:destroy()
+	else
+		self.Buffer = buffer.create(self.Length)
+		self.Offset = 0
+	end
+
+	return toExport
+end
+
+function rbxbuf:destroy()
+	for i, _ in self do
+		self[i] = nil
+	end
+end
+
 for i, v in Types do
 	rbxbuf[i] = v
 end
@@ -166,6 +185,8 @@ export type Cursor = {
 	fill: (c: Cursor, offset: number, value: number, count: number) -> (),
 	len: (c: Cursor) -> number,
 	tostring: (c: Cursor) -> string,
+	export: (c: Cursor, destroyCursor: boolean) -> buffer,
+	destroy: (c: Cursor) -> (),
 }
 
 export type CursorMeta = {
