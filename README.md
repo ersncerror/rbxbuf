@@ -4,7 +4,7 @@
 
 ## :information_source: Introduction
 
-A buffer library with a built-in cursor for easily work with buffer opreations; you can also work with multiple data types that is supported.
+A buffer library for easily work with buffer opreations; you can also work with multiple data types that is supported.
 
 ## :book: Documentation
 Documentation may be make in the future! So you can understand my terrible codes!
