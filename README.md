@@ -1,10 +1,8 @@
-# rbxbuf 
+## :information_source: Information
 ![Github Releases](https://img.shields.io/github/v/release/ersncerror/rbxbuf
 )
 
-## :information_source: Introduction
-
-A buffer library for easily work with buffer opreations; you can also work with multiple data types that is supported.
+rbxbuf is a simple wrapper that does buffer opreations, it can also work with roblox data types too.
 
 ## :book: Documentation
 Documentation may be make in the future! So you can understand my terrible codes!
